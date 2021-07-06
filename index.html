@@ -1,0 +1,131 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<title>Janker.dz4k.com&mdash;Make Jankedex Entries</title>
+
+<meta property="og:title" content="Janker.dz4k.com&mdash;Make Jankedex Entries">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://janker.dz4k.com">
+<meta property="og:image" content="https://janker.dz4k.com/janker-screenshot.png">
+
+<link rel="stylesheet" href="styles.css">
+<script src="https://unpkg.com/hyperscript.org@0.8.1/dist/_hyperscript.js"></script>
+
+<h1>JANKER.DZ4K.COM</h1>
+
+<p>Make Jankedex Entries | Made by 
+<a href="https://denizaksimsek.com">Deniz Akşimşek</a> | 
+<a href="https://github.com/dz4k/janker">GitHub</a></p>
+
+<form method="POST" enctype="multipart/form-data" _="
+	init
+		set global ctx to #jankedex-canvas.getContext('2d')
+		set global jankBg to '#FFB7FF'
+		set global jankBorder to '#DF29AF'
+		set global jankText to '#000000'
+		log the location
+		make a URLSearchParams from the location.search
+		repeat for entry in Array.from(it)
+			if entry[0] is not 'jankemon-image'
+				set the value of #{entry[0]} to entry[1]
+			end
+		end
+
+	-- https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element#16599668
+	def breakLines(ctx, maxWidth, text)
+		set words to text.split(' ')
+		make an Array called lines
+		set the currentLine to words.shift()
+
+		for word in words
+			call ctx.measureText(currentLine + ' ' + word)
+			if the result's width < maxWidth then
+				append ' ' + word to the currentLine
+			else
+				append the currentLine to lines
+				set the currentLine to the word
+			end
+		end
+		append the currentLine to lines
+		return lines
+
+	on submit
+		halt the event
+
+		put 'Janking it up...' into #status
+		
+		-- Background
+		set { fillStyle: jankBg, strokeStyle: jankBorder, lineWidth: 30 } on ctx
+		fillRect  (0, 0, #jankedex-canvas@width, #jankedex-canvas@height) on ctx
+		strokeRect(0, 0, #jankedex-canvas@width, #jankedex-canvas@height) on ctx
+
+		-- Number
+		set { font: `48px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		fillText(`THE JANKEDEX #${value of #jankemon-number}`, 50, 100) on ctx
+
+		-- Name
+		set { font: `36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		fillText(#jankemon-name's value, 50, 200) on ctx
+
+		-- Description
+		set { font: `28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		call breakLines(ctx, 700, #jankemon-desc's value)
+		repeat for line in the result index i
+			fillText(line, 50, 260 + (i * 36)) on ctx
+		end
+		
+		-- Image Caption
+		set { font: `28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		fillText(#jankemon-caption's value,800, 750) on ctx
+
+		-- Image backdrop
+		set { fillStyle: jankText, lineWidth: ctx.lineWidth / 2 } on ctx
+		fillRect(800, 100, 700, 600) on ctx
+
+		-- Image
+		if no #jankemon-image's files[0]
+			set { font: `28px 'Comic Sans MS'`, fillStyle: jankBg } on ctx
+			fillText('No image available', 1000, 400) on ctx
+		else
+			make an <img/> called image
+			set the image's src to URL.createObjectURL(#jankemon-image.files[0])
+			wait for load from the image
+			drawImage(image, 800, 100, 700, 600) on ctx
+		end
+
+		-- Image frame
+		set { strokeStyle: jankBorder, lineWidth: 15 } on ctx
+		strokeRect(800, 100, 700, 600) on ctx
+
+		put 'Love that Janker! Right click to download as image.' into #status
+">
+
+	<p>
+	<label for="jankemon-number">Jankedex &numero;</label>
+	<input type="number" id="jankemon-number" name="jankemon-number">
+	<label for="jankemon-name">Jankemon Name</label>
+	<input type="text" id="jankemon-name" name="jankemon-name"
+		placeholder="e.g. Captain Jankman- The Pirate Jankemon">
+
+	<p>
+	<label for="jankemon-image">Image</label>
+	<input type="file" id="jankemon-image" name="jankemon-image"
+		accept="image/*">
+	<label for="jankemon-caption">Image Caption</label>
+	<input type="text" id="jankemon-caption" name="jankemon-caption">
+
+	<p>
+	<label for="jankemon-desc">Description</label>
+	<textarea id="jankemon-desc" name="jankemon-desc"
+		placeholder="This Jankemon origins special attributes lorem ipsum etc.
+XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX
+		"></textarea>
+
+	<p>
+	<input type="submit" value="JANK IT UP!">
+</form>
+
+<p id="status"></p>
+
+<canvas id="jankedex-canvas" width="1623" height="821"></canvas>
