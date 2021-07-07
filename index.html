@@ -11,6 +11,13 @@
 
 <link rel="stylesheet" href="styles.css">
 <script src="https://unpkg.com/hyperscript.org@0.8.1/dist/_hyperscript.js"></script>
+<style>
+body			{ font-family: "Comic Sans MS", sans-serif 
+				}
+textarea		{ display: block
+				; width: 80vw 
+				}
+</style>
 
 <h1>JANKER.DZ4K.COM</h1>
 
@@ -22,6 +29,7 @@
 	init
 		set global ctx to #jankedex-canvas.getContext('2d')
 		set global jankBg to '#FFB7FF'
+		set global jankImageBg to '#404040'
 		set global jankBorder to '#DF29AF'
 		set global jankText to '#000000'
 		log the location
@@ -32,7 +40,7 @@
 			end
 		end
 
-	-- https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element#16599668
+	-- <https://stackoverflow.com/questions/2936112/text-wrap-in-a-canvas-element#16599668>
 	def breakLines(ctx, maxWidth, text)
 		set words to text.split(' ')
 		make an Array called lines
@@ -54,6 +62,14 @@
 		halt the event
 
 		put 'Janking it up...' into #status
+
+		-- Load the image
+		if #jankemon-image.files[0]
+			make an <img/> called image
+			set the image's src to URL.createObjectURL(#jankemon-image.files[0])
+			wait for load from the image
+		end
+		-- DRAWING --
 		
 		-- Background
 		set { fillStyle: jankBg, strokeStyle: jankBorder, lineWidth: 30 } on ctx
@@ -69,29 +85,37 @@
 		fillText(#jankemon-name's value, 50, 200) on ctx
 
 		-- Description
-		set { font: `28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		set { font: `italic 28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		call breakLines(ctx, 700, #jankemon-desc's value)
 		repeat for line in the result index i
 			fillText(line, 50, 260 + (i * 36)) on ctx
 		end
 		
 		-- Image Caption
-		set { font: `28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		set { font: `italic 28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		fillText(#jankemon-caption's value,800, 750) on ctx
 
 		-- Image backdrop
-		set { fillStyle: jankText, lineWidth: ctx.lineWidth / 2 } on ctx
+		set { fillStyle: jankImageBg, lineWidth: ctx.lineWidth / 2 } on ctx
 		fillRect(800, 100, 700, 600) on ctx
 
 		-- Image
-		if no #jankemon-image's files[0]
+		if no image
 			set { font: `28px 'Comic Sans MS'`, fillStyle: jankBg } on ctx
 			fillText('No image available', 1000, 400) on ctx
 		else
-			make an <img/> called image
-			set the image's src to URL.createObjectURL(#jankemon-image.files[0])
-			wait for load from the image
-			drawImage(image, 800, 100, 700, 600) on ctx
+			-- Scale image <https://stackoverflow.com/questions/23104582/ddg#23105310>
+			set frameWidth to 700 then set frameHeight to 600
+			set ratio to Math.min(frameWidth  / image.width, 
+				                  frameHeight / image.height)
+			set xoff to (frameWidth  - (image.width  * ratio)) / 2
+			set yoff to (frameHeight - (image.height * ratio)) / 2
+			-- Draw image
+			drawImage(
+				image, 
+				0, 0, image.width, image.height,
+				800+xoff, 100+yoff, image.width * ratio, image.height * ratio
+			) on ctx
 		end
 
 		-- Image frame
