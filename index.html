@@ -82,7 +82,7 @@ textarea		{ display: block
 
 		-- Name
 		set xoff to 200
-		set { font: `36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		set { font: `42px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		call breakLines(ctx, 700, #jankemon-name's value)
 		repeat for line in the result
 			fillText(line, 50, xoff) on ctx
@@ -91,7 +91,7 @@ textarea		{ display: block
 
 		-- Description
 		increment xoff by 12
-		set { font: `italic 28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		set { font: `italic 36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		call breakLines(ctx, 700, #jankemon-desc's value)
 		repeat for line in the result index i
 			fillText(line, 50, xoff) on ctx
@@ -99,7 +99,7 @@ textarea		{ display: block
 		end
 		
 		-- Image Caption
-		set { font: `italic 28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
+		set { font: `italic 36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		fillText(#jankemon-caption's value,800, 750) on ctx
 
 		-- Image frame
