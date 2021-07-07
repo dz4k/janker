@@ -81,14 +81,21 @@ textarea		{ display: block
 		fillText(`THE JANKEDEX #${value of #jankemon-number}`, 50, 100) on ctx
 
 		-- Name
+		set xoff to 200
 		set { font: `36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
-		fillText(#jankemon-name's value, 50, 200) on ctx
+		call breakLines(ctx, 700, #jankemon-name's value)
+		repeat for line in the result
+			fillText(line, 50, xoff) on ctx
+			increment xoff by 48
+		end
 
 		-- Description
+		increment xoff by 12
 		set { font: `italic 28px 'Comic Sans MS'`, fillStyle: jankText } on ctx
 		call breakLines(ctx, 700, #jankemon-desc's value)
 		repeat for line in the result index i
-			fillText(line, 50, 260 + (i * 36)) on ctx
+			fillText(line, 50, xoff) on ctx
+			increment xoff by 36
 		end
 		
 		-- Image Caption
