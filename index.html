@@ -95,12 +95,12 @@ textarea		{ display: block
 		call breakLines(ctx, 700, #jankemon-desc's value)
 		repeat for line in the result index i
 			fillText(line, 50, xoff) on ctx
-			increment xoff by 36
+			increment xoff by 42
 		end
 		
 		-- Image Caption
 		set { font: `italic 36px 'Comic Sans MS'`, fillStyle: jankText } on ctx
-		fillText(#jankemon-caption's value,800, 750) on ctx
+		fillText(#jankemon-caption's value, 800, 760) on ctx
 
 		-- Image frame
 		set { strokeStyle: jankBorder, lineWidth: 30 } on ctx
