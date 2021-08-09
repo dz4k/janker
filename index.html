@@ -25,7 +25,36 @@ textarea		{ display: block
 <a href="https://denizaksimsek.com">Deniz Akşimşek</a> | 
 <a href="https://github.com/dz4k/janker">GitHub</a></p>
 
-<form method="POST" enctype="multipart/form-data" _="
+<form id="jankemon-form" method="POST" enctype="multipart/form-data">
+	<p>
+	<label for="jankemon-number">Jankedex &numero;</label>
+	<input type="number" id="jankemon-number" name="jankemon-number">
+	<label for="jankemon-name">Jankemon Name</label>
+	<input type="text" id="jankemon-name" name="jankemon-name"
+		placeholder="e.g. Captain Jankman- The Pirate Jankemon">
+
+	<p>
+	<label for="jankemon-image">Image</label>
+	<input type="file" id="jankemon-image" name="jankemon-image"
+		accept="image/*">
+	<input type="hidden" name="jankemon-image-url">
+	<label for="jankemon-caption">Image Caption</label>
+	<input type="text" id="jankemon-caption" name="jankemon-caption">
+
+	<p>
+	<label for="jankemon-desc">Description</label>
+	<textarea id="jankemon-desc" name="jankemon-desc"
+		placeholder="This Jankemon origins special attributes lorem ipsum etc.
+XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX
+		"></textarea>
+
+	<p>
+	<input type="submit" value="JANK IT UP!">
+</form>
+
+<p id="status"></p>
+
+<canvas id="jankedex-canvas" width="1623" height="821" _="
 	init
 		set global ctx to #jankedex-canvas.getContext('2d')
 		set global jankBg to '#FFB7FF'
@@ -58,7 +87,7 @@ textarea		{ display: block
 		append the currentLine to lines
 		return lines
 
-	on submit
+	on submit from #jankemon-form
 		halt the event
 
 		put 'Janking it up...' into #status
@@ -68,7 +97,12 @@ textarea		{ display: block
 			make an <img/> called image
 			set the image's src to URL.createObjectURL(#jankemon-image.files[0])
 			wait for load from the image
+		else if #jankemon-image-url.value
+			make an <img/> called image
+			set the image's src to #jankemon-image-url.value
+			wait for load from the image
 		end
+		
 		-- DRAWING --
 		
 		-- Background
@@ -130,33 +164,4 @@ textarea		{ display: block
 		end
 
 		put 'Love that Janker! Right click to download as image.' into #status
-">
-
-	<p>
-	<label for="jankemon-number">Jankedex &numero;</label>
-	<input type="number" id="jankemon-number" name="jankemon-number">
-	<label for="jankemon-name">Jankemon Name</label>
-	<input type="text" id="jankemon-name" name="jankemon-name"
-		placeholder="e.g. Captain Jankman- The Pirate Jankemon">
-
-	<p>
-	<label for="jankemon-image">Image</label>
-	<input type="file" id="jankemon-image" name="jankemon-image"
-		accept="image/*">
-	<label for="jankemon-caption">Image Caption</label>
-	<input type="text" id="jankemon-caption" name="jankemon-caption">
-
-	<p>
-	<label for="jankemon-desc">Description</label>
-	<textarea id="jankemon-desc" name="jankemon-desc"
-		placeholder="This Jankemon origins special attributes lorem ipsum etc.
-XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX XXXXX
-		"></textarea>
-
-	<p>
-	<input type="submit" value="JANK IT UP!">
-</form>
-
-<p id="status"></p>
-
-<canvas id="jankedex-canvas" width="1623" height="821"></canvas>
+"></canvas>
